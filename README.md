@@ -5,6 +5,13 @@ tabby plugin
 
 A connection manager home panel plugin for [Tabby](https://tabby.sh) — organize and manage all your SSH, Telnet, and Serial connections in one place.
 
+## What's new in 1.3.0
+
+- **Move to** — move a host to another group (or out of any group) from the card **⋮** menu. If several hosts are selected and the menu is opened on one of them, all selected hosts are moved.
+- **Group colors** — give a group a color from an 8-color palette (Blue, Teal, Red, Amber, Purple, Pink, Green, Gray). The group card gets a colored folder icon and a colored stripe, and its hosts show a colored dot (Recent, search results, MultiExec chips). Colors adapt to light, dark, and colored themes.
+- **Copy SSH command with jump host** — for hosts behind a jump host, the copied command now includes `-J` (including multi-hop chains), so it connects the same way the plugin does.
+- **Card size restored** — grid cards are at least 280px wide again (as in 1.1.x) and stretch to fill the row; long names and addresses show the full text on hover.
+
 ## What's new in 1.2.0
 
 - **No more empty tabs on startup** — Tabby Home no longer leaves a blank tab after restart, and stale empty tabs from previous sessions are cleaned up automatically. Only one Home tab is opened; the toolbar button and hotkey focus it instead of opening a duplicate.
@@ -28,6 +35,9 @@ All features from the original [tabby-home](https://www.npmjs.com/package/tabby-
 - **Jump Host support** — connect via a jump host (bastion): pick an existing host or configure one inline
 - **Bulk credential editing** — when multiple hosts are selected, update username and/or password across all of them at once
 - **Persistent sort order** — your sort choice survives restarts
+- **Move to** — move one or several hosts to a group from the **⋮** menu
+- **Group colors** — palette colors for groups, with a matching dot on their hosts
+- **Copy SSH command** — a ready-to-paste `ssh` command, including `-J` for jump hosts
 - **Theme-aware UI** — adapts to any Tabby color scheme
 
 ---
@@ -91,8 +101,40 @@ Checked checkboxes, highlighted cards, and the hosts passed to MultiExec are alw
 
 ### Card menu and right-click menu
 
-- **⋮ menu** on a card: Connect, Copy SSH command, Duplicate, Edit, Delete
+- **⋮ menu** on a host card: Connect, Duplicate, Copy SSH command, Move to, Edit, Delete
+- **⋮ menu** on a group card: Color, Edit, Delete
 - **Right-click** a host (or a selection): Connect, Open tabs, Export, Copy SSH command, Edit / Bulk edit, Duplicate, Delete
+
+### Move to
+
+Open **⋮** on a host card → **Move to** and pick a group (sorted alphabetically), or **No group** to move the host out of its group. The current group is marked and disabled.
+
+- If several hosts are selected and you open **⋮** on one of them, all selected hosts are moved (the menu shows the count, e.g. *Move to (3)*).
+- If you open **⋮** on a host that is not selected, only that host is moved.
+
+Group counters and the open list update immediately, and the selection is cleared. Drag & drop and the group field in the host editor still work as before.
+
+### Group colors
+
+Open **⋮** on a group card → **Color** (or **Edit** on the group) and pick one of 8 palette colors, or **No color**:
+
+- the group card gets a colored folder icon and a 3px colored stripe on the left;
+- hosts of that group show a colored dot next to their name in **Recent**, search results, and MultiExec chips — hover the dot to see the group name.
+
+Groups without a color look exactly as before. The color is stored as a palette key (e.g. `blue`), and the shade adapts to the current Tabby theme.
+
+### Copy SSH command
+
+Copies a ready-to-paste command, for example:
+
+```bash
+ssh user@10.1.2.230
+ssh admin@db.example.com -p 2222
+ssh -J jump@bastion.corp:2200 user@10.1.2.230
+```
+
+- Hosts behind a jump host get `-J` with the full chain (`-J 'hop1,hop2'` for multiple hops), matching how the plugin connects.
+- Credentials are not included — `ssh` uses your own keys / agent or asks for a password.
 
 ### Jump Host
 
@@ -101,7 +143,7 @@ Open **New Host** or **Edit** on a host and set **Connection Type** to **Via Jum
 - **Select existing jump host** — pick another host from your list as the bastion
 - **Create inline jump host config** — enter the jump host address, port, username, and auth type directly
 
-The jump host is used transparently when connecting.
+The jump host is used transparently when connecting, and it is included as `-J` in **Copy SSH command**.
 
 ### Bulk Credential Editing
 
