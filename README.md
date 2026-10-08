@@ -5,6 +5,10 @@ tabby plugin
 
 A connection manager home panel plugin for [Tabby](https://tabby.sh) — organize and manage all your SSH, Telnet, and Serial connections in one place.
 
+## What's new in 1.3.1
+
+- **MultiExec: arrow keys in full-screen programs** — arrow keys, Home and End typed in the broadcast bar are now sent the same way each terminal would send them itself. Programs like `htop`, `mc` or `vim` no longer receive stray characters or extra lines when you navigate with the arrows in several windows at once.
+
 ## What's new in 1.3.0
 
 - **Move to** — move a host to another group (or out of any group) from the card **⋮** menu. If several hosts are selected and the menu is opened on one of them, all selected hosts are moved.

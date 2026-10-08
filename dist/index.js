@@ -3011,13 +3011,22 @@ let MultiExecTabComponent = MultiExecTabComponent_1 = class MultiExecTabComponen
     }
     // ─── External drop (host from connectionPanel) ─────────────────────────────
     sendToTargets(data) {
+        var _a, _b;
         for (const pane of this.panes) {
             if (!this.targetIds.has(pane.host.id))
                 continue;
             const session = pane.tab.session;
             if (!(session === null || session === void 0 ? void 0 : session.open))
                 continue;
-            pane.tab.sendInput(data);
+            // Стрелки и Home/End кодируются по режиму терминала ЭТОЙ панели, как это делает xterm.js:
+            // если программа включила application cursor keys (vim, htop, mc и т.п.) — ESC O x, иначе ESC [ x
+            let paneData = data;
+            if (/^\x1b\[[ABCDHF]$/.test(data)) {
+                const xterm = (_a = pane.tab.frontend) === null || _a === void 0 ? void 0 : _a.xterm;
+                if ((_b = xterm === null || xterm === void 0 ? void 0 : xterm.modes) === null || _b === void 0 ? void 0 : _b.applicationCursorKeysMode)
+                    paneData = '\x1bO' + data[2];
+            }
+            pane.tab.sendInput(paneData);
         }
     }
     onLayoutDragOver(event) {
